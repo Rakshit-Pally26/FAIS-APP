@@ -1,0 +1,103 @@
+{% extends "faisApp/base.html"%}
+{% block content%}
+<style>
+.dropzone {
+    border: 2px dashed rgb(0, 135, 247);
+}
+
+</style>
+        <!-- Begin Page Content -->
+        <div class="">
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+              <h1 class="h3 mb-0 text-gray-800">Flood Analysis</h1>
+              <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate CVS Report</a>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <p> <a href="{% url 'fais-analyzer'%}" class="btn btn-primary">Google Vision API</a> <a href="{% url 'fais-analyzer1'%}" class="btn btn-primary">Yolov3</a> </p>
+                  <h6 class="m-0 font-weight-bold text-primary">Google Vision API</h6>
+                </div>
+                  <div class="card-body">
+                    <div class="row image-score">
+                      <div class="col-lg-4">
+                        <SECTION>
+                          <DIV id="dropzone">
+                              <form id="img-dropzone" action="{% url 'uploadAnalizer' %}" class="dropzone" drop-zone enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="fallback">
+                                    <h3>Your browser is not supported.</h3>
+                                    <strong>
+                                        <a href="https://browser-update.org/update.html" target="_blank">Click here for instructions on how to update it.</a>
+                                    </strong>
+                                    <p>You can still try to upload your pictures through this form: </p>
+                                    <p>
+                                        <input name="file" type="file" multiple />
+                                        <input type="submit" value="Upload" />
+                                    </p>
+                                 </div>
+                             </form>
+                          </DIV>
+                        </SECTION>
+                        
+
+                        
+                      </div>
+                      <div class="col-lg-4">
+                        <span>Image</span>
+                        <span></span>
+                    </div>
+                      <div class="col-lg-4">
+                          <span>Label and Score</span>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+          </div>
+          </div>
+
+          <div class="row">
+              {%for item in img %}
+              <div class="col-lg-6">
+                  <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                      <h6 class="m-0 font-weight-bold text-primary">{{item.name}}</h6>
+                    </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-lg-8">
+                            <figure class="figure">
+                                    <img src="{{item.url}}" style="width:600px; height: 350px;" class="figure-img img-fluid rounded" alt="...">
+                            </figure>
+                          </div>
+                          <div class="col-lg-4">
+                              <span>Label and Score</span>
+                              {% for label in item.labels %}
+                                <div><span>{{label.description}} : </span>{{label.score}}</div>
+                              {% endfor %}
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+            {%endfor%}
+        </div>
+
+{% endblock content %}
+{% block script%}
+
+<script>
+Dropzone.autoDiscover = false;
+$("#img-dropzone").dropzone({ 
+    url: "{% url 'uploadAnalizer' %}",
+    maxFilesize: 3,
+    acceptedFiles: ".jpeg,.jpg,.png,.gif",
+    success : function(file, response){
+      $(".image-score").html(response);
+    }
+});
+
+</script>
+{% endblock script %}

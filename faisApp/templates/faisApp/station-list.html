@@ -1,0 +1,12 @@
+<div class="input-group-prepend">
+    <label class="input-group-text" for="inputGroupSelect02">Station</label>
+  
+
+</div>
+<select class="custom-select" id="station">
+    <option selected="selected" disabled>Objects on page:</option>
+    {%for item in station%}
+    <option id='{{item.station_number}}'>{{item.station_number}} : {{item.station_name}}</option>
+    {%endfor%}
+</select>
+

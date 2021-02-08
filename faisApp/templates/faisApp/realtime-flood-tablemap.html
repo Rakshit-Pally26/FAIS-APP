@@ -1,0 +1,82 @@
+<div class="card-header py-3">
+    <ul class="nav nav-pills card-header-pills">
+       <li class="nav-item">
+         <a class="nav-link active" id="pills-table-view"  data-toggle="pill" role="tab" href="#table-view" aria-controls="table-view" aria-selected="true">Table View</a>
+       </li>
+       <li class="nav-item">
+         <a class="nav-link" id="pills-map-view" data-toggle="pill" role="tab" href="#map-view" aria-controls="map-view" aria-selected="false">Map View</a>
+       </li>
+   </ul>
+ </div>
+<div id="table-body" class="card-body">
+   <div class="tab-content" id="pills-tabContent">
+     <div class="tab-pane fade show active" id="table-view" role="tabpanel" aria-labelledby="pills-table-view" >
+      <div id="table-innerbody" class="table-responsive" style="overflow: hidden">
+         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+           <thead>
+             <tr>
+               <th>Station</th>
+               <th>ID</th>
+               <th>Latitude</th>
+               <th>Longitude</th>
+               <th>Flow (cubic ft)</th>
+               <th>Stage</th>
+               <th>Class</th>
+               <th>Url</th>
+             </tr>
+           </thead>                        
+           <tbody>
+             {% for item in realtime%}                      
+               <tr>
+                   <td>{{ item.station }}</td>
+                   <td>{{ item.id_num }}</td>
+                   <td>{{ item.latitude }}</td>
+                   <td>{{ item.longitude }}</td>
+                   <td>{{ item.flow }}</td>
+                   <td>{{ item.stage }}</td>
+                   <td>{{ item.avg_ht }}</td>
+                   <td><a href="{{item.url}}">link</a></td>
+               </tr>  
+             {% endfor %}                  
+           </tbody>
+         </table> 
+      </div>
+     </div>
+     <div class="tab-pane fade" id="map-view" role="tabpanel" aria-labelledby="pills-map-view">
+        <div id="weathermap" ></div>
+        <script> 
+            document.getElementById('weathermap').innerHTML = "<div id='map'></div>";
+              var map = L.map('map').setView([{{avg_lat}}, {{avg_log}}], 8);
+              L.esri.basemapLayer('NationalGeographic').addTo(map);
+              // a Leaflet marker is used by default to symbolize point features.
+              L.esri.featureLayer({
+                url: 'https://enviroatlas.epa.gov/arcgis/rest/services/Other/HydrologicUnits/MapServer/2',
+                maxZoom: 15
+              }).addTo(map);
+            
+              var array = [];
+              {% for item in realtime%}  
+              var marker = new L.marker([{{ item.latitude }},{{ item.longitude }}]);
+              var popup = L.popup().setContent(`
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">{{item.station}}</div>
+                <div class="text-xs font-weight-bold text-success text-uppercase mb-1 text-muted">{{item.id_num}}</div>
+                <span class="control-label">Flow: {{item.flow}} </span>
+                <span class="control-label">Stage: {{item.stage}}</span><br>
+                <span class="control-label">Latitude: {{item.latitude}} </span>
+                <span class="control-label">Longtitude: {{item.longitude}}</span>
+                <span class="control-label">Class: {{item.avg_ht}}</span>
+              `)
+              marker.bindPopup(popup);  
+              marker.addTo(map);
+            
+              {% endfor %}    
+            
+              $("a[href='#map-view']").on('shown.bs.tab', function(e) {
+                map.invalidateSize();
+              });
+            
+            </script>
+     </div>
+   </div>
+  
+ </div>

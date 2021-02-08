@@ -1,0 +1,134 @@
+{% extends "faisApp/base.html"%}
+{% block content%}
+<div id="overlay">
+
+  <div class="loading">
+    <div class="loader"></div>
+</div>
+</div>
+        <!-- Begin Page Content -->
+        <div class=""> 
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+              <h1 class="h3 mb-0 text-gray-800">HydroShare Flood Data</h1>
+
+              <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate CVS Report</a>
+          </div>
+        </div>
+        <div class="card shadow mb-4">
+          <!-- Card Header - Accordion -->
+          <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button"
+            aria-expanded="true" aria-controls="collapseCardExample">
+            <h6 class="m-0 font-weight-bold text-primary">USGS Peak Flow Rate Analysis</h6>
+          </a>
+          <!-- Card Content - Collapse -->
+          <div class="collapse show" id="collapseCardExample">
+            <form id="searchformusgs">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group ">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Flood Station</span>
+                      </div>
+                      <input id="station_num" type="text" class="form-control" placeholder="Station" aria-label="Station"
+                      aria-describedby="basic-addon1">
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="basic-addon1">Start Date</span>
+                    </div>
+                    <input style="background: white" required id="start-date" type="text" class="form-control" placeholder="Start Date" aria-label="start date"
+                      aria-describedby="basic-addon1"  readonly='true'>
+                  </div>
+                </div>
+                
+                <div class="col-md-3">
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="basic-addon1">End Date</span>
+                    </div>
+                    <input style="background: white" required id="end-date" type="text" class="form-control" placeholder="End Date" aria-label="start date"
+                      aria-describedby="basic-addon1" readonly='true' >
+                  </div>
+                </div>
+             </div> 
+             <div class="graph_result">
+               
+             </div>
+             
+            </div>
+            <div class="card-footer">
+              <button type="submit" name="search-usgs" id="search-usgs" href="#" class="btn btn-primary ">
+                <i class="fas fa-search"></i>  Search
+              </button>
+            </div>
+          </form>
+          </div>
+
+        </div>
+{% endblock content %}
+{% block script%}
+
+<script>
+  $(document).ready(function(){
+    $('#searchformusgs').submit(function(e){
+      e.preventDefault();
+      station =  $('#station_num').val();
+      startdate =  $('#start-date').val();
+        enddate =  $('#end-date').val();
+      $("#overlay").show();
+      $.get( "{% url 'executehydroshare' 'value'%}",{'station': station, 'startdate': startdate, 'enddate': enddate}, function( data) {
+        $(".graph_result").html(data);
+        $('#dataTable').DataTable();
+        $("#overlay").hide();
+      });
+    });
+  });
+</script>
+<script>
+  $( function() {
+    $( "#start-date" ).datepicker({
+        format: 'yyyy-mm-dd',
+        startDate: '-3d',
+        onSelect: function(dateText, inst) {
+        var date = $(this).datepicker('getDate'),
+            day  = date.getDate(),
+            month = date.getMonth() + 1,
+            year =  date.getFullYear();
+            if (month < 10){
+              month = '0'+month
+            }
+            if (day<10){
+              day = '0' + day
+            }
+            $( "#start-date" ).val(year + '-' + month + '-' + day);
+        }
+    });
+  });
+</script>
+<script>
+  $( function() {
+    $( "#end-date" ).datepicker({
+        format: 'yyyy-mm-dd',
+        startDate: '-3d',
+        onSelect: function(dateText, inst) {
+        var date = $(this).datepicker('getDate'),
+            day  = date.getDate(),
+            month = date.getMonth() + 1,
+            year =  date.getFullYear();
+            if (month < 10){
+              month = '0'+month
+            }
+            if (day<10){
+              day = '0' + day
+            }
+            $( "#end-date" ).val(year + '-' + month + '-' + day);
+        }
+    });
+  });
+</script>
+{% endblock script %}

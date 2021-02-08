@@ -1,0 +1,179 @@
+{% extends "faisApp/base.html"%}
+{% block content%}
+<div id="overlay">
+
+  <div class="loading">
+    <div class="loader"></div>
+</div>
+</div>
+    <div id="page-whole"class="container-fluid">
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+          <h1>RealTime Flood Information</h1>
+
+         <button id="save-csv"  class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+              <i class="fas fa-download fa-sm text-white-50"></i> Generate CVS Report
+          </button>
+          <div class="modal fade" id="savecsv" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <form action="#" method="get">
+                  <div class="modal-header">
+                    <!--<h5 class="modal-title" id="exampleModalLongTitle">Save Report To CSV</h5>-->
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+
+                      <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">File Name</span>
+                          </div>
+                          <input type="text" name="myfilenamebox" class="form-control" aria-label="CSV File name">
+                          <div class="input-group-append">
+                            <span class="input-group-text">.csv</span>
+                          </div>
+                      </div>
+
+                  </div>
+                  <div class="modal-footer">
+                   <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm btn" value="Click" name="mybtn" type="submit"><i class="fas fa-download fa-sm text-white-50"></i> Generate CVS Report</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  </div>
+                  </form>
+                </div>
+              </div>
+          </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="inputGroupSelect01">States</label>
+                    </div>
+                    <form action="#" method="POST">
+                    {% csrf_token %}
+                    <select name="drop1" id="drop1" class="custom-select" action = "{% url 'fais-home' %}">
+                       <option selected="selected" disabled>Objects on page:</option>
+                        {% for item in states_list%}
+                        <option value="{{item.state_code}}">{{item.state_name}}</option>
+                        {%endfor%}
+                    </select>
+                    </form>
+                </div>
+            </div>
+          </div>
+          <div class="realtime-data card shadow mb-4">
+              <div class="card-header py-3">
+                 <ul class="nav nav-pills card-header-pills">
+                    <li class="nav-item">
+                      <a class="nav-link active" id="pills-table-view"  data-toggle="pill" role="tab" href="#table-view" aria-controls="table-view" aria-selected="true">Table View</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="pills-map-view" data-toggle="pill" role="tab" href="#map-view" aria-controls="map-view" aria-selected="false">Map View</a>
+                    </li>
+                </ul>
+              </div>
+             <div id="table-body" class="card-body">
+                <div class="tab-content" id="pills-tabContent">
+                  <div class="tab-pane fade show active" id="table-view" role="tabpanel" aria-labelledby="pills-table-view" >
+                   <div id="table-innerbody" class="table-responsive" style="overflow: hidden">
+                      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                          <tr>
+                            <th>Station Name</th>
+                            <th>ID</th>
+                            <th>Latitude</th>
+                            <th>Longitude</th>
+                            <th>Flow (ft<sup>3</sup>/s)</th>
+                            <th>Stage (ft)</th>
+                            <th>Class</th>
+                            <th>Url</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for item in realtime%}
+                            <tr>
+                                <td>{{ item.station }}</td>
+                                <td>{{ item.id_num }}</td>
+                                <td>{{ item.latitude }}</td>
+                                <td>{{ item.longitude }}</td>
+                                <td>{{ item.flow }}</td>
+                                <td>{{ item.stage }}</td>
+                                <td>{{ item.avg_ht }}</td>
+                                <td><a href="{{item.url}}">link</a></td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                   </div>
+                  </div>
+                  <div class="tab-pane fade" id="map-view" role="tabpanel" aria-labelledby="pills-map-view">
+                    <div id="weathermap" ></div>
+                    <script>
+                        document.getElementById('weathermap').innerHTML = "<div id='map' style='padding-left: 0.5; width: 99%; height: 630px;'></div>";
+                          var map = L.map('map').setView([{{avg_lat}}, {{avg_log}}], 8);
+                          L.esri.basemapLayer('NationalGeographic').addTo(map);
+                          // a Leaflet marker is used by default to symbolize point features.
+                          L.esri.featureLayer({
+                            url: 'https://enviroatlas.epa.gov/arcgis/rest/services/Other/HydrologicUnits/MapServer/2',
+                            maxZoom: 15
+                          }).addTo(map, 0);
+
+                          $("a[href='#map-view']").on('shown.bs.tab', function(e) {
+                            map.invalidateSize();
+                          });
+
+                        </script>
+                  </div>
+                </div>
+
+              </div>
+          </div>
+        </div>
+
+
+
+
+{% endblock content %}
+{% block script%}
+<script>
+    $(document).ready(function(){
+      $('#drop1').change(function(){
+       var value = $('#drop1').val();
+       $("#overlay").show();
+       $.get( "{% url 'execute' 'value'%}",{'value': value}, function( xhr) {
+        $("#overlay").hide();
+        $(".realtime-data").html(xhr);
+        $('#dataTable').DataTable();
+       });
+    });
+});
+</script>
+
+<script>
+  $(document).ready(function(){
+    $('#save-csv').click(function(){
+     fetch( "{% url 'saveCSVRealTime' %}")
+      .then(resp => resp.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        // the filename you want
+        a.download = 'RealTime USGS Data.csv';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+    
+      .catch(() => alert('oh no!'));  
+    }); 
+    
+});
+</script>
+
+
+
+{% endblock script %}

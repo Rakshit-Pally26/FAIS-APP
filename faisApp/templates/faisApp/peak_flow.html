@@ -1,0 +1,97 @@
+
+<div class="row"> 
+  <div class="col-md-12">
+    <div class="streamer-table able-responsive" style="overflow: hidden">
+      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Station ID : {{StationNumber}}</th>
+            <th>Station Name : {{StationName}}</th>
+            <th>{{latnlong}}</th>
+          </tr>
+          <tr>
+            <th>Date Time</th>
+            <th>Peak Value (cfs)</th>
+            <th>Peak Gage Height (ft.)</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for item in table%}
+            <tr>
+                <td>{{ item.peak_dt }}</td>
+                <td>{{ item.peak_va }}</td>
+                <td>{{ item.gage_ht }}</td>                             
+            </tr>  
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="row"> 
+  <div class="col-md-12">
+    <div class="streamer-table able-responsive" style="overflow: hidden">
+      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Summary statistics for peak flow values</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for item1 in stat%}
+            <tr>
+                <td>{{ item1 }}</td>                           
+            </tr>  
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div>
+    <img src="{{html_img}}" style="padding-left: 180px;">
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4">
+    <img src="{{html_img1}}" style="width:360px;height:360px">
+  </div>
+  <div class="col-md-4">
+    <img src="{{html_img2}}" style="width:360px;height:360px">
+  </div>
+  <div class="col-md-4">
+    <img src="{{html_img3}}" style="width:360px;height:360px">
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <img src="{{html_img4}}" style="width:360px;height:360px">
+  </div>
+  <div class="col-md-4">
+    <img src="{{html_img5}}" style="width:360px;height:360px">
+  </div>
+  <div class="col-md-4">
+    <img src="{{html_img6}}" style="width:360px;height:360px">
+  </div>
+</div>
+<div class="row">
+  <div>
+    <img src="{{html_img7}}" style="width:360px;height:360px;">
+  </div>
+</div>
+
+<div class="row"> 
+  <div class="col-md-12">
+    <div class="streamer-table able-responsive" style="overflow: hidden">
+      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+          <tr><th>The best fitting distribution was {{result}} with which had parameters {{params}}</th></tr>
+        </thead>
+      </table>
+    </div>
+  </div>
+</div>

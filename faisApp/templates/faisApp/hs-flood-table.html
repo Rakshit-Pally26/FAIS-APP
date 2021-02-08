@@ -1,0 +1,56 @@
+
+<div class="row"> 
+  <div class="col-md-12">
+    <div class="streamer-table able-responsive" style="overflow: hidden">
+      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Station ID : {{StationNumber}}</th>
+            <th>Station Name : {{siteName}}</th>
+            <th>Latitude : {{latitude}}, Longitude : {{longitude}}</th>
+          </tr>
+          <tr>
+            <th>Date Time</th>
+            <th>Flow (cfs)</th>
+            <th>Gage Height (ft.)</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for item1, item2, item3 in data%}
+            <tr>
+                <td>{{ item2 }}</td>
+                <td>{{ item1 }}</td>   
+                <td>{{ item3 }}</td>                         
+            </tr>  
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Flow Average</h6>
+  </div>
+  <div class="card-body" style="height: 540px;">
+    <div class="chart-area">
+      <img src="{{graph_dis}}" style="padding-left: 180px;">
+    </div>
+  </div>
+  <div class="card-footer">
+  </div>
+</div>
+
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Gage Height Average</h6>
+  </div>
+  <div class="card-body" style="height: 540px;">
+    <div class="chart-area">
+      <img src="{{graph_gage}}" style="height: 540px; width: 990px;">
+    </div>
+  </div>
+  <div class="card-footer">
+  </div>
+</div>

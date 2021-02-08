@@ -1,0 +1,44 @@
+<div class="col-lg-4">
+    <SECTION>
+        <DIV id="dropzone">
+            <form id="img-dropzone" action="{% url 'uploadAnalizer' %}" class="dropzone" drop-zone enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="fallback">
+                  <h3>Your browser is not supported.</h3>
+                  <strong>
+                      <a href="https://browser-update.org/update.html" target="_blank">Click here for instructions on how to update it.</a>
+                  </strong>
+                  <p>You can still try to upload your pictures through this form: </p>
+                  <p>
+                      <input name="file" type="file" multiple />
+                      <input type="submit" value="Upload" />
+                  </p>
+               </div>
+           </form>
+        </DIV>
+    </SECTION>
+  </div>
+  <div class="col-lg-4">
+    <img  style="width:360px; height: 250px;" src="{{pic}}" alt = "image not found">
+</div>
+  <div class="col-lg-4">
+      <span>Label and Score</span>
+      {% for label in labels %}
+                                <div><span>{{label.description}} : </span>{{label.score}}</div>
+      {% endfor %}
+  </div>
+</div>
+</div>
+
+<script>
+    Dropzone.autoDiscover = false;
+    $("#img-dropzone").dropzone({ 
+        url: "{% url 'uploadAnalizer' %}", 
+        maxFilesize: 3,
+        success : function(file, response){
+          $(".image-score").html(response);
+        }
+    });
+    
+    
+    </script>

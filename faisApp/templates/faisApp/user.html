@@ -1,0 +1,110 @@
+{% extends "faisApp/base.html"%}
+{% block content%}
+    <div class="container-fluid">
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Local Report Data</h1>
+            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                class="fas fa-download fa-sm text-white-50"></i> Generate CVS Report</a>
+          </div>
+        
+          <div class="row">
+            <div class=col-md-12>
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Reported Table</h6>
+                  <a href="{% url 'fais-create'%}" class="btn btn-primary btn-circle" style="margin-top: 10px">
+                      <i class="fas fa-plus"></i>
+                  </a>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive" style="overflow: hidden">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                      <thead>
+                        <tr>
+                          <th>Latitude</th>
+                          <th>Longitude</th>
+                          <th>Location Name</th>
+                          <th>Date Time</th>
+                          <th>Flood Depth (ft.)</th>
+                          <th>States</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          {% for item in posts%}
+                      
+                          <tr>
+                              <td>{{ item.latitude }}</td>
+                              <td>{{ item.longitude }}</td>
+                              <td>{{ item.name }}</td>
+                              <td>{{ item.date_posted }}</td>
+                              <td>{{ item.depth }}</td>
+                              <td>{{ item.state }}</td>
+                              <td>
+                                  {% if item.author == user%}
+                                  <a href="{% url 'fais-update' item.id%}" class="btn btn-secondary btn-circle">
+                                    <i class="fas fa-edit"></i>
+                                  </a>
+                                  <a href="{% url 'fais-delete' item.id%}" class="btn btn-danger btn-circle">
+                                      <i class="fas fa-times"></i>
+                                  </a>
+                                  {%endif%}
+                                  <button  class="btn btn-success btn-circle" data-toggle="modal" data-target="#exampleModalCenter{{item.id}}">
+                                      <i class="fas fa-user"></i>
+                                  </button>
+                                  <div class="modal fade" id="exampleModalCenter{{item.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                      <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLongTitle">Author</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                            </button>
+                                          </div>
+                                          <div class="modal-body">
+                                            <div class="row">
+                                              <div class="col-md-3">
+                                                <span>First Name: </span>
+                                              </div>
+                                              <div class="col-md-9">
+                                                  <span>{{item.author.first_name}}</span>
+                                              </div>
+                                              <div class="col-md-3">
+                                                  <span>Last Name: </span>
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <span>{{item.author.last_name}}</span>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <span>Organization: </span>
+                                                  </div>
+                                                  <div class="col-md-9">
+                                                      <span>{{item.author.profile.organization}}</span>
+                                                  </div>
+                                                <div class="col-md-3">
+                                                    <span>Email: </span>
+                                                  </div>
+                                                  <div class="col-md-9">
+                                                      <span>{{item.author.email}}</span>
+                                                  </div>
+                                            </div>
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                  </div>
+                                </td>
+                          </tr>  
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+{% endblock content %}

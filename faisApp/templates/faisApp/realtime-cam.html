@@ -1,0 +1,172 @@
+
+
+{% extends "faisApp/base.html"%}
+{% load static%}
+{% block content%}
+        <!-- Begin Page Content -->
+        <div class=""> 
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+              <h1 class="h3 mb-0 text-gray-800">River Cams</h1>
+              <a href="/fais/imagesusgs" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Download Images </a>
+              </div>
+          <div class="row">
+            <div class="col-lg-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                      <h6 class="m-0 font-weight-bold text-primary">Rocky Creek</h6>
+                    </div>
+                    <div class="card-body">
+                        <figure class="figure">
+                            <img id="webcam" src="http://b7b.hdrelay.com/cameras/fa96bb1e-426d-4b40-a820-251713325420/GetOneShot?size=800x450" style="width:485px; height: 350px;" class="figure-img img-fluid rounded" alt="...">
+                            <figcaption class="figure-caption"> Rocky Creek near Wade Hampton, Station: 021603273</figcaption>
+                        </figure>
+                    </div>
+                    <div class="card-footer">
+                      <div>Water Level: 4.65	ft </div>
+                      <div>Percentile: 72.41</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                      <h6 class="m-0 font-weight-bold text-primary">Rocky Branch</h6>
+                    </div>
+                    <div class="card-body">
+                        <figure class="figure">
+                            <img class="webcam" src="http://b7b.hdrelay.com/cameras/2fb4ae88-446d-4632-a849-d426240ccca5/GetOneShot?size=800x450" style="width:485px; height: 350px;" class="figure-img img-fluid rounded" alt="...">
+                            <figcaption class="figure-caption"> Rocky Branch at Whaley St., Columbia Station: 02169506</figcaption>
+                        </figure>
+                    </div>
+                    <div class="card-footer">
+                      <div>Water Level: 1.02	ft </div>
+                      <div>Percentile: N/A</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                      <h6 class="m-0 font-weight-bold text-primary">Peedee River</h6>
+                    </div>
+                    <div class="card-body">
+                        <figure class="figure">
+                            <img class="webcam" src="http://b10b.hdrelay.com/cameras/42336a6b-5be8-443c-97c9-3d70da459e88/GetOneShot?size=800x450" style="width:485px; height: 350px;" class="figure-img img-fluid rounded" alt="...">
+                            <figcaption class="figure-caption">Peedee River near Florence Station: 02130810</figcaption>
+                        </figure>
+                    </div>
+                    <div class="card-footer">
+                      <div>Water Level: 4.65	ft </div>
+                      <div>Percentile: 72.41</div>
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div class="row">
+              <div class="col-lg-4">
+                  <div class="card shadow mb-4">
+                      <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Lake Moultrie</h6>
+                      </div>
+                      <div class="card-body">
+                          <figure class="figure"></figure>                        
+                            <img class="webcam" src="http://b7b.hdrelay.com/cameras/dab6dc0d-d702-4146-899f-85a7945de140/GetOneShot?size=800x450" style="width:485px; height: 350px;" class="figure-img img-fluid rounded" alt="...">
+                              <figcaption class="figure-caption">Lake Moultrie Tailrace Canal at Moncks Corner, SC Station: 02172002</figcaption>
+                          </figure>
+                      </div>
+                      <div class="card-footer">
+                        <div>Water Level: 75.14 ft </div>
+                        <div>Percentile: N/A</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-lg-4">
+                  <div class="card shadow mb-4">
+                      <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Tearcoat Branch Upstream</h6>
+                      </div>
+                      <div class="card-body">
+                          <figure class="figure">
+                              <img class="webcam" src="http://b10b.hdrelay.com/cameras/403818bc-9e8d-4857-9eb0-a675c9668782/GetOneShot?size=800x450" style="width:485px; height: 350px;" class="figure-img img-fluid rounded" alt="...">
+                              <figcaption class="figure-caption">Tearcoat Branch Upstream at I-95, near Manning, SC Station: 021355015</figcaption>
+                          </figure>
+                      </div>
+                      <div class="card-footer">
+                        <div>Water Level: 6.67 ft </div>
+                        <div>Percentile: N/A</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-lg-4">
+                  <div class="card shadow mb-4">
+                      <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Tearcoat Branch Downstream</h6>
+                      </div>
+                      <div class="card-body">
+                          <figure class="figure">
+                              <img class="webcam" src="http://b10b.hdrelay.com/cameras/009e9855-a077-4c2a-8289-10eea8ba9f0f/GetOneShot?size=800x450" style="width:485px; height: 350px;" class="figure-img img-fluid rounded" alt="...">
+                              <figcaption class="figure-caption">Tearcoat Branch Downstream Station: 021355015</figcaption>
+                          </figure>
+                      </div>
+                      <div class="card-footer">
+                        <div>Water Level: 6.67 ft </div>
+                        <div>Percentile: N/A</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-lg-4">
+                  <div class="card shadow mb-4">
+                      <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Pocotaligo River Upstream</h6>
+                      </div>
+                      <div class="card-body">
+                          <figure class="figure">
+                              <img class="webcam" src="http://b10b.hdrelay.com/cameras/a8a00672-f089-4b2d-bf36-85e41a838488/GetOneShot?size=800x450" style="width:485px; height: 350px;" class="figure-img img-fluid rounded" alt="...">
+                              <figcaption class="figure-caption">Pocotaligo River at I-95, above Manning, SC Station: 02135615</figcaption>
+                          </figure>
+                      </div>
+                      <div class="card-footer">
+                        <div>Water Level: 8.46 ft </div>
+                        <div>Percentile: N/A</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-lg-4">
+                  <div class="card shadow mb-4">
+                      <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Pocotaligo River Downstream</h6>
+                      </div>
+                      <div class="card-body">
+                          <figure class="figure">
+                              <img class="webcam" src="http://b10b.hdrelay.com/cameras/39f23793-0e60-43f6-a0b4-ccb073004640/GetOneShot?size=800x450" style="width:485px; height: 350px;" class="figure-img img-fluid rounded" alt="...">
+                              <figcaption class="figure-caption">Pocotaligo River at I-95, above Manning, SC Station: 02135615</figcaption>
+                          </figure>
+                      </div>
+                      <div class="card-footer">
+                        <div>Water Level: 8.46	ft </div>
+                        <div>Percentile: N/A </div>
+                      </div>
+                  </div>
+              </div>              
+          </div>
+        </div>
+
+{% endblock content %}
+
+
+{% block script%}
+
+<script>
+  let webcams =  document.getElementsByClassName("webcam");
+  for (var i = 0; i < webcams.length; i++) {
+    webcams[i].addEventListener("error", (event) => {
+      var targetElement = event.target || event.srcElement;
+      targetElement.onerror = null;
+      targetElement.src = "{% static 'faisApp/notavalible.png' %}";
+    });
+  }    
+</script>
+{% endblock script %}

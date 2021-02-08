@@ -1,0 +1,90 @@
+<div class="tab-pane fade show active" id="table-view" role="tabpanel" aria-labelledby="pills-table-view" >
+  <div class="able-responsive" style="overflow: hidden">
+      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Text</th>
+            <th>Geo</th>
+            <th>Username</th>
+            <th>Date Time</th>
+            <th>lat</th>
+            <th>long</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for item in twitter%}
+            <tr>
+                <td>{{ item.text }}</td>
+                <td>{{ item.geo }}</td>
+                <td>{{ item.user }}</td>
+                <td>{{ item.date }}</td>  
+                <td>{{ item.latitude }}</td>
+                <td>{{ item.longitude }}</td>                            
+            </tr>  
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+</div>                    
+<div class="tab-pane fade" id="map-view" role="tabpanel" aria-labelledby="pills-map-view">
+  <div id="weathermap" ></div>
+  <script>
+    document.getElementById('weathermap').innerHTML = "<div id='map'></div>";
+      var map = L.map('map').setView([39.8283, -98.5795], 4);
+      L.esri.basemapLayer('NationalGeographic').addTo(map);
+      // a Leaflet marker is used by default to symbolize point features.
+      L.esri.featureLayer({
+        url: 'https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/9',
+        maxZoom: 15
+      }).addTo(map, 0);
+      var icon = L.icon({
+        iconUrl: 'https://www.pinclipart.com/picdir/big/121-1215420_glossy-home-icon-button-clip-art-at-red.png',
+        iconSize: [4, 7],
+        iconAnchor: [13.5, 17.5],
+      });
+      L.esri.featureLayer({
+        url: 'https://geo.dot.gov/server/rest/services/NTAD/National_Bridge_Inventory/MapServer/0',
+        maxZoom: 15,
+        pointToLayer: function (geojson, latlng) {
+          return L.marker(latlng, {
+            icon: icon
+          });
+        }
+      }).addTo(map, 0);
+      L.esri.featureLayer({
+        url: 'https://enviroatlas.epa.gov/arcgis/rest/services/Other/HydrologicUnits/MapServer/2',
+        maxZoom: 15
+      }).setStyle({color: 'brown', weight: 0.9, fillOpacity: 0.1}).addTo(map, 0);
+
+      var array = [];
+      {% for item in twitter%}
+      var circleCenter = [{{ item.latitude }}, {{ item.longitude }}]
+      var circleOptions ={
+        weight : 0,
+        fillOpacity : 0
+      }
+      var circle = L.circle(circleCenter, 16000, circleOptions);
+      var marker = new L.marker([{{ item.latitude }},{{ item.longitude }}]);
+      var popup = L.popup().setContent(`
+        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">{{item.user}}</div>
+        <div class="text-xs font-weight-bold text-success text-uppercase mb-1 text-muted">{{item.geo}}</div>
+        <span class="control-label">Text: {{item.text}} </span>
+        <span class="control-label">Date: {{item.date}}</span><br>
+        <span class="control-label">Latitude: {{item.latitude}} </span>
+        <span class="control-label">Longtitude: {{item.longitude}}</span>
+      `)
+      marker.bindPopup(popup);
+      marker.addTo(map);
+      circle.addTo(map);
+      var rectOptions = {color: 'red', weight: 0.9, fillOpacity: 0.3}
+      var rectangle = new L.Rectangle(circle.getBounds(), rectOptions).addTo(map);
+
+      {% endfor %}
+
+      $("a[href='#map-view']").on('shown.bs.tab', function(e) {
+        map.invalidateSize();
+      });
+
+    </script>
+</div>
+</div>

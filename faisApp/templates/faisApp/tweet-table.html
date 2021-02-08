@@ -1,0 +1,26 @@
+<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+    <thead>
+      <tr>
+        <th>Tweets</th>
+        <th>Date</th>
+        <th>Source</th>
+        <th>Image</th>
+        <th>Sentiment</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in twitter%}                      
+          <tr>
+              <td>{{ item.tweets }}</td>
+              <td>{{ item.date_posted }}</td>
+              <td><a href="{{item.source_url}}"><i class="fas fa-external-link-alt"></i></a></td>
+              {% if item.image_url != ""%}
+              <td><a href="{{item.image_url}}"><i class="fas fa-external-link-alt"></i></a></td>
+              {% else %}
+              <td></td>
+              {% endif %}
+              <td>{{ item.Sentiment }}</td>
+          </tr>  
+        {% endfor %}   
+    </tbody>
+  </table>

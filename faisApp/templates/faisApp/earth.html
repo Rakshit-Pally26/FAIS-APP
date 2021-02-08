@@ -1,0 +1,196 @@
+{% extends "faisApp/base.html"%} {%load static%}
+{% block content%}
+    <div class="container-fluid">
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Streaming Tweets</h1>
+            <button id="save-csv"  class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+              <i class="fas fa-download fa-sm text-white-50"></i> Generate CVS Report
+          </button></div>
+          <div class="row">
+            <div class="col-md-3">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="inputGroupSelect01">States</label>
+                    </div>
+                    <form action="#" method="POST">
+                    {% csrf_token %}
+                    <select name="drop1" id="drop1" class="custom-select" action = "{% url 'fais-home' %}">
+                       <option selected="selected" disabled>Objects on page:</option>
+                       <option value="{{item.state_code}}">All</option>
+                        {% for item in states_list%}
+                        <option value="{{item.state_code}}">{{item.state_name}}</option>
+                        {%endfor%}
+                    </select>
+                    </form>
+                </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class=col-md-12>
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <ul class="nav nav-pills card-header-pills">
+                     <li class="nav-item">
+                       <a class="nav-link active" id="pills-table-view"  data-toggle="pill" role="tab" href="#table-view" aria-controls="table-view" aria-selected="true">Table View</a>
+                     </li>
+                     <li class="nav-item">
+                       <a class="nav-link" id="pills-map-view" data-toggle="pill" role="tab" href="#map-view" aria-controls="map-view" aria-selected="false">Map View</a>
+                     </li>
+                 </ul>
+               </div>
+                <div class="card-body">
+                  <div class="tab-content streamer-table" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="table-view" role="tabpanel" aria-labelledby="pills-table-view" >
+                        <div class="able-responsive" style="overflow: hidden">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                              <thead>
+                                <tr>
+                                  <th>Text</th>
+                                  <th>Geo</th>
+                                  <th>Username</th>
+                                  <th>Date Time</th>
+                                  <th>lat</th>
+                                  <th>long</th>
+                                </tr>
+                              </thead>
+                            </table>
+                          </div>
+                    </div>                    
+                    <div class="tab-pane fade" id="map-view" role="tabpanel" aria-labelledby="pills-map-view">
+                      <div id="weathermap" ></div>
+                      <script>
+                          document.getElementById('weathermap').innerHTML = "<div id='map' style='padding-left: 0.5; width: 99%; height: 630px;'></div>";
+                            var map = L.map('map').setView([34.6834, -82.8374], 8);
+                            L.esri.basemapLayer('NationalGeographic').addTo(map);
+                            // a Leaflet marker is used by default to symbolize point features.
+                            L.esri.featureLayer({
+                              url: 'https://enviroatlas.epa.gov/arcgis/rest/services/Other/HydrologicUnits/MapServer/2',
+                              maxZoom: 15
+                            }).setStyle({color: 'brown', weight: 0.9, fillOpacity: 0.1}).addTo(map, 1);
+                            L.esri.featureLayer({
+                              url: 'https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/9',
+                              maxZoom: 15
+                            }).addTo(map, 1);
+                            var icon = L.icon({
+                              iconUrl: 'https://www.pinclipart.com/picdir/big/121-1215420_glossy-home-icon-button-clip-art-at-red.png',
+                              iconSize: [4, 7],
+                              iconAnchor: [13.5, 17.5],
+                            });
+                            L.esri.featureLayer({
+                              url: 'https://geo.dot.gov/server/rest/services/NTAD/National_Bridge_Inventory/MapServer/0',
+                              maxZoom: 15,
+                              pointToLayer: function (geojson, latlng) {
+                                return L.marker(latlng, {
+                                  icon: icon
+                                });
+                              }
+                            }).addTo(map, 1);
+                            var array = [];
+                            {% for item in Stations%}
+                            var circleCenter = [{{ item.latitude }}, {{ item.longitude }}]
+                            var circleOptions ={
+                              weight : 0,
+                              fillOpacity : 0
+                            }
+                            var circle = L.circle(circleCenter, 16000, circleOptions);
+                            var marker = new L.marker([{{ item.latitude }},{{ item.longitude }}]);
+                            var popup = L.popup().setContent(`
+                              <div class="text-xs font-weight-bold text-info text-uppercase mb-1">{{item.station}}</div>
+                              <div class="text-xs font-weight-bold text-success text-uppercase mb-1 text-muted">Station_id: {{item.id_num}}</div>
+                              <span class="control-label">Flow: {{item.flow}} (cubic ft.)</span><br>
+                              <span class="control-label">Stage: {{item.stage}}</span><br>
+                              <span class="control-label">Latitude: {{item.latitude}} </span>
+                              <span class="control-label">Longtitude: {{item.longitude}}</span><br>
+                              <span class="control-label">URL: {{item.url}}</span>
+                              <span class="control-label">Class: {{item.avg_ht}}</span>
+                            `)
+                            marker.bindPopup(popup);
+                            marker.addTo(map);
+                            circle.addTo(map);
+                            var rectOptions = {color: 'red', weight: 0.9, fillOpacity: 0.3}
+                            var rectangle = new L.Rectangle(circle.getBounds(), rectOptions).addTo(map);
+  
+                            {% endfor %}
+  
+                            $("a[href='#map-view']").on('shown.bs.tab', function(e) {
+                              map.invalidateSize();
+                            });
+  
+                          </script>
+                        
+                  </div>
+                  </div>
+                 
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+{% endblock content %}
+{% block script%}
+<script>
+var tweet_request = function() {
+  
+  temp = "temp"
+  $.get( "{% url 'updatestreamer' 'value'%}",{'temp': temp}, function( data) {  
+    $(".streamer-table").html(data);
+    $('#dataTable').DataTable();
+  });
+};
+
+var interval = 1000 * 60 * 10
+
+setInterval(tweet_request, interval)
+
+</script>
+<script>
+  $(document).ready(function(){
+    $('#refresh-streamer').submit(function(e){
+      temp = "temp"
+      e.preventDefault();
+      $("#overlay").show();
+      $.get( "{% url 'updatestreamer' 'value'%}",{'temp': temp}, function( data) {
+        $(".streamer-table").html(data);
+        $('#dataTable').DataTable();
+
+      });
+    });
+  });
+</script>
+<script>
+  $(document).ready(function(){
+    $('#drop1').change(function(){
+     var value = $('#drop1 option:selected').text();
+     $("#overlay").show();
+     $.get( "{% url 'updatestreamer' 'value'%}",{'value': value}, function( xhr) {
+      $("#overlay").hide();
+      $(".streamer-table").html(xhr);
+      $('#dataTable').DataTable();
+     });
+  });
+});
+</script>
+<script>
+  $(document).ready(function(){
+    $('#save-csv').click(function(){
+     fetch( "{% url 'saveCSVTwitterStream' %}")
+      .then(resp => resp.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        // the filename you want
+        a.download = 'Twitter Data.csv';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+    
+      .catch(() => alert('oh no!'));  
+    }); 
+    
+});
+</script>
+{% endblock script %}

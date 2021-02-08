@@ -1,0 +1,241 @@
+{% extends "faisApp/base.html"%}
+{% block content%}
+<div id="overlay">
+
+  <div class="loading">
+    <div class="loader"></div>
+</div>
+</div>
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Historical Flood Information</h1>
+            <button id="save-csv"  class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+              <i class="fas fa-download fa-sm text-white-50"></i> Generate CVS Report
+          </button>
+          </div>
+          <div class="card shadow mb-4">
+            <!-- Card Header - Accordion -->
+            <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button"
+              aria-expanded="true" aria-controls="collapseCardExample">
+              <h6 class="m-0 font-weight-bold text-primary">Search Citeria</h6>
+            </a>
+            <!-- Card Content - Collapse -->
+            <div class="collapse show" id="collapseCardExample">
+              <form id="searchformusgs">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-3">
+                    <div class="state-list input-group mb-3">
+                      <div class="input-group-prepend">
+                        <label class="input-group-text" for="inputGroupSelect01">States</label>
+                      </div>
+                      <form action="#" method="POST">
+                        {% csrf_token %}
+                        <select name="statedrop" id="statedrop" class="custom-select" action = "{% url 'fais-home' %}">
+                           <option selected="selected" disabled>Objects on page:</option>
+                            {% for item in states_list%}
+                            <option value="{{item.state_code}}">{{item.state_name}}</option>
+                            {%endfor%}
+                        </select>
+
+                    </div>
+
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="station-list input-group mb-6">
+                      <div class="input-group-prepend">
+                        <label class="input-group-text" for="inputGroupSelect02">Station</label>
+                      </div>
+                      <select class="custom-select" id="station">
+                        <option selected="selected" disabled>Objects on page:</option>
+                        {%for item in station%}
+                        <option id='{{item.station_number}}'>{{item.station_number}} : {{item.station_name}}</option>
+                        {%endfor%}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Start Date</span>
+                      </div>
+                      <input style="background: white" required id="start-date" type="text" class="form-control" placeholder="Start Date" aria-label="start date"
+                        aria-describedby="basic-addon1"  readonly='true'>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">End Date</span>
+                      </div>
+                      <input style="background: white" required id="end-date" type="text" class="form-control" placeholder="End Date" aria-label="start date"
+                        aria-describedby="basic-addon1" readonly='true' >
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <button type="submit" name="search-usgs" id="search-usgs" href="#" class="btn btn-primary ">
+                  <i class="fas fa-search"></i>  Search
+                </button>
+              </div>
+            </form>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="col-md-5">
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Gage Height Average</h6>
+                </div>
+                <div class="card-body">
+                  <div class="chart-area">
+                    <canvas id="gage_height_chart"></canvas>
+                  </div>
+                </div>
+                <div class="card-footer">
+                </div>
+              </div>
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Discharge Average</h6>
+                </div>
+                <div class="card-body">
+                  <div class="chart-area">
+                    <canvas id="myAreaChart2"></canvas>
+                  </div>
+                </div>
+                <div class="card-footer">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-7">
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Flood Data</h6>
+                </div>
+                <div class="hist-table card-body">
+                  <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                      <thead>
+                        <tr>
+                          <th>Date Time</th>
+                          <th>Discharge (ft<sup>3</sup>/s)</th>
+                          <th>Gage Height (ft)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {%for item in hist %}
+                        <tr>
+                          <td>{{ item.date }}</td>
+                          <td>{{ item.discharge }}</td>
+                          <td>{{ item.gage_height }}</td>
+                        </tr>
+                        {%endfor%}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+{% endblock content %}
+{% block script%}
+<script>
+    $(document).ready(function(){
+      $('#statedrop').change(function(){
+       var value = $('#statedrop').val();
+       $("#overlay").show();
+       $.get( "{% url 'stateselecthist' 'value'%}",{'value': value}, function( data) {
+        $("#overlay").hide();
+        $(".station-list").html(data);
+       });
+    });
+});
+
+</script>
+<script>
+    $(document).ready(function(){
+      $('#searchformusgs').submit(function(e){
+        e.preventDefault();
+        station =  $('#station').children(":selected").attr("id");
+        startdate =  $('#start-date').val();
+        enddate =  $('#end-date').val();
+        $("#overlay").show();
+        $.get( "{% url 'executehistorical' 'value'%}",{'station': station, 'startdate': startdate, 'enddate': enddate}, function( data) {
+          $(".hist-table").html(data);
+          $('#dataTable').DataTable();
+          $("#overlay").hide();
+        });
+      });
+    });
+</script>
+<script>
+  $( function() {
+    $( "#start-date" ).datepicker({
+        format: 'yyyy-mm-dd',
+        startDate: '-3d',
+        onSelect: function(dateText, inst) {
+        var date = $(this).datepicker('getDate'),
+            day  = date.getDate(),
+            month = date.getMonth() + 1,
+            year =  date.getFullYear();
+            if (month < 10){
+              month = '0'+month
+            }
+            if (day<10){
+              day = '0' + day
+            }
+            $( "#start-date" ).val(year + '-' + month + '-' + day);
+        }
+    });
+  });
+</script>
+<script>
+  $( function() {
+    $( "#end-date" ).datepicker({
+        format: 'yyyy-mm-dd',
+        startDate: '-3d',
+        onSelect: function(dateText, inst) {
+        var date = $(this).datepicker('getDate'),
+            day  = date.getDate(),
+            month = date.getMonth() + 1,
+            year =  date.getFullYear();
+            if (month < 10){
+              month = '0'+month
+            }
+            if (day<10){
+              day = '0' + day
+            }
+            $( "#end-date" ).val(year + '-' + month + '-' + day);
+        }
+    });
+  });
+</script>
+<script>
+  $(document).ready(function(){
+    $('#save-csv').click(function(){
+     fetch( "{% url 'saveCSVHist' %}")
+      .then(resp => resp.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        // the filename you want
+        a.download = 'Historical USGS Data.csv';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+    
+      .catch(() => alert('oh no!'));  
+    }); 
+    
+});
+</script>
+{% endblock script %}
