@@ -1,0 +1,30 @@
+{%extends 'faisApp/base.html'%}
+{%load crispy_forms_tags%}
+{%block content%}
+
+
+<div class="card shadow mb-4">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Welcome! {{user.first_name}}</h6>
+       
+    </div>
+    <!-- Card Body -->
+    <div class="card-body">        
+        <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">Profile Update</legend>
+                    {{u_form|crispy}}
+                    {{p_form|crispy}}
+                </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-info" type="submit">Update</button>
+                </div>
+        </form>
+    </div>
+</div>
+
+            
+    
+{%endblock content%}
